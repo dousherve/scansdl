@@ -1,0 +1,7 @@
+.DS_Store
+
+.venv/
+scans/
+__pycache__/
+
+dl.py
