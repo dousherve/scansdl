@@ -1,5 +1,5 @@
 # scans_dl
-A (very basic) tool to download all the manga scans in a webpage.
+A (very basic) tool written in Python to download all the manga scans in a webpage.
 
 For now, the code is pretty stupid and just looks for every HTML `<img>` tag in the webpage at the given URL, and then downloads all those images.
 
