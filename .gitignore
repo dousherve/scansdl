@@ -5,3 +5,4 @@ scans/
 __pycache__/
 
 dl.py
+archive.py
