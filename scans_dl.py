@@ -33,7 +33,7 @@ def download(url: str, parent_folder: str = "scans/raw"):
         
     print(f"\nDownloaded {i} scans from {url} in {output_folder}.\n")
     
-def create_cbr(folder: str, name: str = "", output_folder: str = "scans/cbr"):
+def create_cbr(folder: str, output_folder: str = "scans/cbr", name: str = ""):
     """Create a CBR archive from all the scans contained in the specified folder."""
     if not os.path.isdir(folder):
         return
