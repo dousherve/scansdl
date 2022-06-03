@@ -5,13 +5,13 @@ For now, the code is pretty stupid and just looks for every HTML `<img>` tag in 
 
 First, install the dependencies (make sure to create and activate a virtual environment beforehand if you don't want to clutter your main Python install) :
 
-```shell
+```console
 python3 -m pip install -r requirements.txt
 ```
 
 To use the program, one can write something like that :
 
-```shell
+```console
 python3 scans_dl.py download https://site.com/chapter-1
 ```
 
@@ -19,7 +19,7 @@ This command downloads all the scans of the chapter found in the webpage. It doe
 
 You can also download multiple chapters at a time, by replacing the number of the chapter that changes in the address with '{}' and by specifying a range. For instance:
 
-```shell
+```console
 python3 scans_dl.py download https://site.com/chapter-{} --range 1-40
 ```
 
