@@ -59,10 +59,10 @@ def create_cbr(input_folder: str, name: str = "", output_folder: str = "scans/cb
     return cbr_path
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog="scans_dl", description="Download and archive anime scans.")
+    parser = argparse.ArgumentParser(prog="scans_dl", description="Download and archive manga scans.")
     subparsers = parser.add_subparsers(dest="command")
     
-    dl_parser = subparsers.add_parser("download", aliases=["dl", "d"], help="Download all anime scans at the given address.")
+    dl_parser = subparsers.add_parser("download", aliases=["dl", "d"], help="Download all manga scans at the given address.")
     dl_parser.add_argument("address", help="The address of the webpage(s) containing the scans.")
     dl_parser.add_argument("--range", "-r", type=str, help="The range of the chapters to download, in the form a-b. Use '{}' in the address to specify where to increment the chapter. You can also specify a single number, which will be the last chapter to download.")
     dl_parser.add_argument("--name", "-n", type=str, default="", help="The name of the manga.")
