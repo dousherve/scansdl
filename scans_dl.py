@@ -4,16 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 from zipfile import ZipFile
     
-def fetch_data(url: str):
-    r = requests.get(url)
-    return r.text
-    
-def dl_img(url: str, file_path: str):
+def download_img(url: str, file_path: str):
     r = requests.get(url)
     with open(file_path, "wb") as img:
         img.write(r.content)
         
-def download(url: str, name: str = "", output_folder: str = "scans/raw"):
+def download_scans(url: str, name: str = "", output_folder: str = "scans/raw"):
     """Download all the images found in the webpage at the given URL."""
     url = url[:-1] if url[-1] == '/' else url
     name = url.split('/')[-1] if (not name or len(name) == 0) else name
@@ -24,7 +20,7 @@ def download(url: str, name: str = "", output_folder: str = "scans/raw"):
 
     print("Downloading scans:\n")
 
-    soup = BeautifulSoup(fetch_data(url), 'html.parser')
+    soup = BeautifulSoup(requests.get(url).text, 'html.parser')
     i = 0
     for item in soup.find_all('img'):
         scan_url = item['src']
@@ -34,7 +30,7 @@ def download(url: str, name: str = "", output_folder: str = "scans/raw"):
         ext = scan_url.split('.')[-1]
         ext = '.' + ext if '/' not in ext else ".jpg"
         print(f"    - {scan_url}")
-        dl_img(scan_url, f"{output_folder}/{i}{ext}")
+        download_img(scan_url, f"{output_folder}/{i}{ext}")
         
     print(f"\nDownloaded {i} scans from {url} in {output_folder}.\n")
     
@@ -107,14 +103,14 @@ if __name__ == '__main__':
                 dl_range = range(raw_range[0], raw_range[1] + 1)
                 
             for i in dl_range:
-                download(
+                download_scans(
                     args.address.format(i),
                     args.foldername + '-' + str(i) if args.foldername else "",
                     args.output if args.output else "scans/raw" + ('/' + args.name if args.name else "")
                 )
         
         else:
-            download(
+            download_scans(
                 args.address,
                 args.foldername,
                 args.output if args.output else "scans/raw" + ('/' + args.name if args.name else "")
@@ -136,7 +132,7 @@ if __name__ == '__main__':
                 
                 print(f"Created CBR file for {chapter}: {path}")
                 
-            print(f"\nCreated {i} CBR files.")
+            print(f"\nCreated {i} CBR file{'s' if i > 1 else ''}.")
             
         else:
             path = create_cbr(
