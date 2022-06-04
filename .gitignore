@@ -3,3 +3,5 @@
 .venv/
 scans/
 __pycache__/
+dist/
+scansdl.egg-info/

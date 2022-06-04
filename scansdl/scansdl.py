@@ -53,9 +53,9 @@ def create_cbr(input_folder: str, name: str = "", output_folder: str = "scans/cb
             cbr.write(f"{input_folder}/{scan}")
             
     return cbr_path
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog="scans_dl", description="Download and archive manga scans.")
+    
+def parse_args():
+    parser = argparse.ArgumentParser(prog="scansdl", description="Download and archive manga scans.")
     subparsers = parser.add_subparsers(dest="command")
     
     dl_parser = subparsers.add_parser("download", aliases=["dl", "d"], help="Download all manga scans at the given address.")
@@ -76,68 +76,80 @@ if __name__ == '__main__':
         parser.print_help(sys.stderr)
         sys.exit(1)
     
-    args = parser.parse_args()
+    return parser.parse_args()
     
-    if args.command in ["download", "dl", "d"]:
-        if "{}" in args.address and not args.range:
-            print("Error: '{}' was found in the address, but no range was specified.", file=sys.stderr)
+def process_download_command(args):
+    if "{}" in args.address and not args.range:
+        print("Error: '{}' was found in the address, but no range was specified.", file=sys.stderr)
+        sys.exit(1)
+    
+    if args.range:
+        if "{}" not in args.address:
+            print("Error: a range was specified, but '{}' missing in the address.", file=sys.stderr)
             sys.exit(1)
         
-        if args.range:
-            if "{}" not in args.address:
-                print("Error: a range was specified, but '{}' missing in the address.", file=sys.stderr)
-                sys.exit(1)
-            
-            raw_range = args.range.split('-')
-            dl_range = None
-            
-            if len(raw_range) > 2 or '' in raw_range:
-                print("Error: please specify the range in the form 'a-b', where a < b, i.e '1-10'. Or, specify a single number that will act as the last number of the range.", file=sys.stderr)
-                sys.exit(1)
-            
-            raw_range = [int(x) for x in raw_range]
-                
-            if len(raw_range) == 1:
-                dl_range = range(1, raw_range[0] + 1)
-            else:
-                dl_range = range(raw_range[0], raw_range[1] + 1)
-                
-            for i in dl_range:
-                download_scans(
-                    args.address.format(i),
-                    args.foldername + '-' + str(i) if args.foldername else "",
-                    args.output if args.output else "scans/raw" + ('/' + args.name if args.name else "")
-                )
+        raw_range = args.range.split('-')
+        dl_range = None
         
+        if len(raw_range) > 2 or '' in raw_range:
+            print("Error: please specify the range in the form 'a-b', where a < b, i.e '1-10'. Or, specify a single number that will act as the last number of the range.", file=sys.stderr)
+            sys.exit(1)
+        
+        raw_range = [int(x) for x in raw_range]
+            
+        if len(raw_range) == 1:
+            dl_range = range(1, raw_range[0] + 1)
         else:
+            dl_range = range(raw_range[0], raw_range[1] + 1)
+            
+        for i in dl_range:
             download_scans(
-                args.address,
-                args.foldername,
+                args.address.format(i),
+                args.foldername + '-' + str(i) if args.foldername else "",
                 args.output if args.output else "scans/raw" + ('/' + args.name if args.name else "")
             )
-        
-    elif args.command == "cbr":
-        if args.all:
-            i = 0
-            for chapter in os.listdir(args.path):
-                if os.path.isfile(chapter):
-                    continue
-                
-                i += 1
-                path = create_cbr(
-                    f"{args.path}/{chapter}",
-                    args.filename + '-' + str(i) if args.filename else "",
-                    args.output if args.output else "scans/cbr/" + args.path.split('/')[-1]
-                )
-                
-                print(f"Created CBR file for {chapter}: {path}")
-                
-            print(f"\nCreated {i} CBR file{'s' if i > 1 else ''}.")
+    
+    else:
+        download_scans(
+            args.address,
+            args.foldername,
+            args.output if args.output else "scans/raw" + ('/' + args.name if args.name else "")
+        )
+
+def process_cbr_command(args):
+    if args.all:
+        i = 0
+        for chapter in os.listdir(args.path):
+            if os.path.isfile(chapter):
+                continue
             
-        else:
+            i += 1
             path = create_cbr(
-                args.path,
-                args.filename,
+                f"{args.path}/{chapter}",
+                args.filename + '-' + str(i) if args.filename else "",
                 args.output if args.output else "scans/cbr/" + args.path.split('/')[-1]
             )
-            print(f"\nArchive created: {path}")
+            
+            print(f"Created CBR file for {chapter}: {path}")
+            
+            print(f"\nCreated {i} CBR file{'s' if i > 1 else ''}.")
+            
+    else:
+        path = create_cbr(
+            args.path,
+            args.filename,
+            args.output if args.output else "scans/cbr/" + args.path.split('/')[-1]
+        )
+        print(f"\nArchive created: {path}")
+
+def app():
+    args = parse_args()
+    
+    if args.command in ["download", "dl", "d"]:
+        process_download_command(args)
+        
+    elif args.command == "cbr":
+        process_cbr_command(args)
+
+if __name__ == '__main__':
+    app()
