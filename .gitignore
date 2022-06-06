@@ -1,7 +1,10 @@
 .DS_Store
 
 .venv/
-scans/
 __pycache__/
 dist/
-scansdl.egg-info/
+build/
+*.egg-info/
+
+scans/
+tests/

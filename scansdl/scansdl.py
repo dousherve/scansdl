@@ -132,7 +132,7 @@ def process_cbr_command(args):
             
             print(f"Created CBR file for {chapter}: {path}")
             
-            print(f"\nCreated {i} CBR file{'s' if i > 1 else ''}.")
+        print(f"\nCreated {i} CBR file{'s' if i > 1 else ''}.")
             
     else:
         path = create_cbr(
@@ -140,7 +140,7 @@ def process_cbr_command(args):
             args.filename,
             args.output if args.output else "scans/cbr/" + args.path.split('/')[-1]
         )
-        print(f"\nArchive created: {path}")
+        print(f"\nCreated CBR file: {path}")
 
 def app():
     args = parse_args()
